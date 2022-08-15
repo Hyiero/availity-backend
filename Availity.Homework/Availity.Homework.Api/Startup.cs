@@ -27,9 +27,20 @@ namespace Availity.Homework.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "_myAllowSpecificOrigins",
+                                  policy =>
+                                  {
+                                      policy.WithOrigins("http://localhost:3000");
+                                      policy.AllowAnyHeader();
+                                      policy.AllowAnyMethod();
+                                  });
+            });
             services.AddScoped<ILispService, LispService>();
             services.AddScoped<ICsvParser, CsvParser>();
             services.AddScoped<IEnrollmentService, EnrollmentService>();
+            services.AddScoped<IFileService, FileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,11 +52,9 @@ namespace Availity.Homework.Api
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
+            app.UseCors("_myAllowSpecificOrigins");
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

@@ -35,5 +35,18 @@ namespace Availity.Homework.Api.Tests
             Assert.IsType<OkObjectResult>(response);
             Assert.Equal(isValid, (response as OkObjectResult).Value);
         }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void ValidateCode_ShouldReturnBadRequestResult_WhenTheCodePassedInIsNullOrEmpty(string lispCode)
+        {
+            // Arrange
+            // Act
+            var response = controller.ValidateCode(lispCode);
+
+            // Assert
+            Assert.IsType<BadRequestResult>(response);
+        }
     }
 }

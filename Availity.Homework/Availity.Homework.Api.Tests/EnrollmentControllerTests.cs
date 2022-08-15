@@ -34,7 +34,7 @@ namespace Availity.Homework.Api.Tests
             writer.Flush();
             ms.Position = 0;
             fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
-            fileMock.Setup(_ => _.Name).Returns(fileName);
+            fileMock.Setup(_ => _.FileName).Returns(fileName);
             fileMock.Setup(_ => _.Length).Returns(ms.Length);
 
             return fileMock;

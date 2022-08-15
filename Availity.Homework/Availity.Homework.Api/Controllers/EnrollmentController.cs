@@ -15,18 +15,21 @@ namespace Availity.Homework.Api.Controllers
     public class EnrollmentController : ControllerBase
     {
         readonly IEnrollmentService enrollmentService;
+        readonly IFileService fileService;
 
-        public EnrollmentController(IEnrollmentService enrollmentService)
+        public EnrollmentController(IEnrollmentService enrollmentService, IFileService fileService)
         {
             this.enrollmentService = enrollmentService;
+            this.fileService = fileService;
         }
 
+        [Consumes("multipart/form-data")]
         [HttpPost("split")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult SplitEnrollmentBy([FromQuery] string groupBy, IFormFile file)
         {
-            if (file == null || !file.Name.EndsWith(".csv"))
+            if (file == null || !file.FileName.EndsWith(".csv"))
             {
                 return BadRequest();
             }
@@ -34,7 +37,9 @@ namespace Availity.Homework.Api.Controllers
             var enrollments = enrollmentService.ParseEnrollmentCsv(ExtractContentsOfFile(file));
             var splitCsvs = enrollmentService.CreateSeperateCsvDataForEnrollmentByGrouping(enrollments, groupBy);
 
-            return Ok();
+            // await fileService.SaveFiles(splitCsvs);
+
+            return Ok(splitCsvs);
         }
 
         #region Private Methods

@@ -20,10 +20,15 @@ namespace Availity.Homework.Api.Controllers
             this.lispService = lispService;
         }
 
-        [HttpGet("validate/code/{code}")]
+        [HttpPost("validate/code")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-        public IActionResult ValidateCode(string code)
+        public IActionResult ValidateCode([FromBody]string code)
         {
+            if (string.IsNullOrEmpty(code))
+            {
+                return BadRequest();
+            }
+
             return Ok(lispService.Valid(code));
         }
     }
