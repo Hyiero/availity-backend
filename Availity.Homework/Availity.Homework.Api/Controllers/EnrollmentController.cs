@@ -37,6 +37,10 @@ namespace Availity.Homework.Api.Controllers
             var enrollments = enrollmentService.ParseEnrollmentCsv(ExtractContentsOfFile(file));
             var splitCsvs = enrollmentService.CreateSeperateCsvDataForEnrollmentByGrouping(enrollments, groupBy);
 
+            // This code would save the files to the disk drive on the server. Since I decided to do these questions in a webapi form
+            // I thought it not wise to save to the disk drive and send back the filepaths to the users, instead I sent the newly created csv file contents
+            // to the frontend and used the front to put that content into blobs that would then be saved as .csv files
+            // If you uncomment to try it out you will need to also change IActionResult to async Task<IActionResult>
             // await fileService.SaveFiles(splitCsvs);
 
             return Ok(splitCsvs);
