@@ -125,6 +125,24 @@ namespace Availity.Homework.Services.Tests
         }
 
         [Fact]
+        public void CreateSeperateCsvDataForEnrollmentByGrouping_ShouldReturnTheKeyAsMissingData_WhenTheGroupByDataFieldIsNull()
+        {
+            // Arrange
+            var rowDTOs = new List<EnrollmentImportRowDTO>();
+            var firstCsvData = "adssda";
+            rowDTOs.Add(new EnrollmentImportRowDTO() { InsuranceCompany = null, Name = "Brandon Ripley", UserId = "1", Version = 2 });
+            mockCsvParser.Setup(x => x.Serialize(It.IsAny<List<EnrollmentImportRowDTO>>()))
+                .Returns(firstCsvData);
+
+            // Act
+            var results = service.CreateSeperateCsvDataForEnrollmentByGrouping(rowDTOs, "InsuranceCompany");
+
+            // Assert
+            Assert.Equal(firstCsvData, results["Missing Data"]);
+        }
+
+
+        [Fact]
         public void CreateSeperateCsvDataForEnrollmentByGrouping_ShouldThrowNullReferenceException_WhenGroupByIsProvidedThatIsntAValidModelProperty()
         {
             // Arrange

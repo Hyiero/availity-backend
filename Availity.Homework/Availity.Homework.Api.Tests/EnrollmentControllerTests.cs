@@ -15,11 +15,13 @@ namespace Availity.Homework.Api.Tests
     {
         readonly EnrollmentController controller;
         readonly Mock<IEnrollmentService> mockEnrollmentService;
+        readonly Mock<IFileService> mockFileService;
 
         public EnrollmentControllerTests()
         {
             mockEnrollmentService = new Mock<IEnrollmentService>();
-            controller = new EnrollmentController(mockEnrollmentService.Object);
+            mockFileService = new Mock<IFileService>();
+            controller = new EnrollmentController(mockEnrollmentService.Object, mockFileService.Object);
         }
 
         #region SaveEnrollmentInformation
@@ -69,24 +71,26 @@ namespace Availity.Homework.Api.Tests
         }
 
         [Fact]
-        public void SaveEnrollmentInformation_ShouldReturnOkRequestResponse_WhenTheFilePassedIsValidAndIsParsedWithoutError()
+        public void SaveEnrollmentInformation_ShouldReturnOkObjectResultWithCorrectResponseData_WhenTheFilePassedIsValidAndIsParsedWithoutError()
         {
             // Arrange
             var content = @"User Id,Name,Insurance Company,Version
                             1,Brandon Ripley,Atena,1";
             var fileName = "test.csv";
             var file = SetupMockFileReaderData(content, fileName);
-            var enrollments = new List<EnrollmentImportRowDTO>();
+            var enrollments = new List<EnrollmentImportRowDTO>() { new EnrollmentImportRowDTO() };
             var groupBy = "InsuranceCompany";
+            var newCsvs = new Dictionary<string, string>();
             mockEnrollmentService.Setup(x => x.ParseEnrollmentCsv(content)).Returns(enrollments).Verifiable();
-            mockEnrollmentService.Setup(x => x.CreateSeperateCsvDataForEnrollmentByGrouping(enrollments, groupBy)).Verifiable();
+            mockEnrollmentService.Setup(x => x.CreateSeperateCsvDataForEnrollmentByGrouping(enrollments, groupBy)).Returns(newCsvs).Verifiable();
 
             // Act
             var response = controller.SplitEnrollmentBy(groupBy, file.Object);
 
             // Assert
             mockEnrollmentService.Verify();
-            Assert.IsType<OkResult>(response);
+            Assert.IsType<OkObjectResult>(response);
+            Assert.Equal(newCsvs, (response as OkObjectResult).Value);
         }
         #endregion
     }

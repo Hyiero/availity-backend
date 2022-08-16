@@ -30,8 +30,9 @@ namespace Availity.Homework.Services
             {
                 var csvData = csvParser.Serialize(group);
                 var firstItemInGroup = group.First();
-                var uniqueGroupingName = firstItemInGroup.GetType().GetProperty(groupBy).GetValue(firstItemInGroup, null).ToString();
-                csvDatas.Add(uniqueGroupingName, csvData);
+                var uniqueGroupingName = firstItemInGroup.GetType().GetProperty(groupBy).GetValue(firstItemInGroup, null)?.ToString();
+
+                csvDatas.Add(uniqueGroupingName ?? "Missing Data", csvData);
             }
 
             return csvDatas;

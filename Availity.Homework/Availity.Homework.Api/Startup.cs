@@ -41,6 +41,7 @@ namespace Availity.Homework.Api
             services.AddScoped<ICsvParser, CsvParser>();
             services.AddScoped<IEnrollmentService, EnrollmentService>();
             services.AddScoped<IFileService, FileService>();
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +52,8 @@ namespace Availity.Homework.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("_myAllowSpecificOrigins");

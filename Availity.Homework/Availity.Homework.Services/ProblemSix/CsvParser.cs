@@ -74,9 +74,9 @@ namespace Availity.Homework.Services
                 rowSB.Clear();
                 for (var i = 0; i < properties.Length; i++)
                 {
-                    var value = properties[i].GetValue(item, null).ToString();
+                    var value = properties[i].GetValue(item, null)?.ToString();
                     // Wrap strings in double quotes when a comma is present in the string
-                    if (properties[i].PropertyType.FullName == "System.String" && value.Contains(','))
+                    if (value != null && properties[i].PropertyType.FullName == "System.String" && value.Contains(','))
                     {
                         value = "\"" + value + "\"";
                     }

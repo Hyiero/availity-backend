@@ -209,10 +209,11 @@ namespace Availity.Homework.Services.Tests
 
         #region Serialize
         [Fact]
-        public void Serialize_ShouldReturnTheCsvDataWithTheObjectProperitiesAsTheFirstLine_WhenCalledWithAPopulatedObject()
+        public void Serialize_ShouldReturnTheCsvDataTakenTheObjectProperitiesAsHeaderAndFillingInTheValuesAsTheData_WhenCalledWithAPopulatedObject()
         {
             // Arrange
             var expectedHeaderRow = "UserId,Name,Version,InsuranceCompany";
+            var expectedDataRow = "3,\"Cool, Sauce\",1002,Atena";
             var rowOne = new EnrollmentImportRowDTO() { Name = "Cool, Sauce", InsuranceCompany = "Atena", UserId = "3", Version = 1002 };
             var rows = new List<EnrollmentImportRowDTO>() { rowOne };
 
@@ -221,6 +222,22 @@ namespace Availity.Homework.Services.Tests
 
             // Assert
             Assert.Contains(expectedHeaderRow, csvData);
+            Assert.Contains(expectedDataRow, csvData);
+        }
+
+        [Fact]
+        public void Serialize_ShouldReturnTheCsvDataWithBlankData_WhenCalledWithAnObjectThatHasNullData()
+        {
+            // Arrange
+            var expectedDataRow = "3,,1002,Atena";
+            var rowOne = new EnrollmentImportRowDTO() { Name = null, InsuranceCompany = "Atena", UserId = "3", Version = 1002 };
+            var rows = new List<EnrollmentImportRowDTO>() { rowOne };
+
+            // Act
+            var csvData = service.Serialize(rows);
+
+            // Assert
+            Assert.Contains(expectedDataRow, csvData);
         }
         #endregion
     }

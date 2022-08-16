@@ -27,6 +27,7 @@ namespace Availity.Homework.Api.Controllers
         [HttpPost("split")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public IActionResult SplitEnrollmentBy([FromQuery] string groupBy, IFormFile file)
         {
             if (file == null || !file.FileName.EndsWith(".csv"))
